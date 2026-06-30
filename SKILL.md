@@ -26,14 +26,19 @@ principal por la columna `Dirección de Arte`; si tu base usa otros nombres, aju
 y la detección en `notion_to_excel.py`.
 
 ## Flujo a seguir
-1. **Confirmar el mes.** Si el usuario no lo dijo, pregúntale (AskUserQuestion) qué mes compilar.
-2. **Verificar la fuente.** Lista los `.zip` en `notion/` y confirma cuál es el más reciente
-   (`ls -t notion/*.zip | head -1`). Si el usuario menciona una versión que NO es la más reciente,
-   adviérteselo con datos antes de continuar.
-3. **Generar:**
+1. **Detectar los meses disponibles** en el export más reciente (NO asumir):
    ```bash
    cd ~/.claude/skills/notion-to-excel
-   python3 notion_to_excel.py --mes "<Mes>"
+   python3 notion_to_excel.py --list-meses
+   ```
+   Devuelve la fuente (`# Fuente: ...`) y una línea por mes con su cantidad (`Mes<TAB>cantidad`).
+2. **Menú interactivo de mes (OBLIGATORIO).** Aunque el usuario haya dicho un mes, presenta SIEMPRE
+   un menú con **AskUserQuestion** listando los meses detectados en el paso 1, con su cantidad de
+   publicaciones (ej. "Jul 26 — 48 publicaciones"). El usuario elige uno. No ofrezcas la entrada
+   `(sin mes)` como opción de exportación; si existe, solo menciónala como aviso de calidad de datos.
+3. **Generar** con el mes elegido (acepta el valor tal cual, ej. "Jul 26" o "Julio"):
+   ```bash
+   python3 notion_to_excel.py --mes "<Mes elegido>"
    ```
 4. **Reportar:** ruta del archivo, nº de publicaciones, desglose por tenant y cualquier aviso
    (filas sin tenant → hoja _SIN-TENANT, sugerir corregir en Notion).

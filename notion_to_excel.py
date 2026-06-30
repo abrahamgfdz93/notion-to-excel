@@ -135,12 +135,24 @@ def main():
                     help="Mes a compilar (ej. Julio). Si se omite: todos los meses.")
     ap.add_argument("--zip", default=None, help="Ruta a un .zip concreto (por defecto: el más reciente).")
     ap.add_argument("--out", default=None, help="Ruta de salida .xlsx (por defecto: output/ con consecutivo).")
+    ap.add_argument("--list-meses", action="store_true",
+                    help="Solo lista los meses detectados en el export (para el menú interactivo).")
     a = ap.parse_args()
 
     zip_path = a.zip if a.zip else zip_vigente(NOTION_DIR)
     if not os.path.isabs(zip_path):
         zip_path = os.path.join(PROJ, zip_path)
     rows = load_export(zip_path)
+
+    # Modo listado: imprime "Mes<TAB>cantidad" por línea, en orden cronológico.
+    if a.list_meses:
+        cnt = Counter((r.get("Mes") or "(sin mes)").strip() for r in rows)
+        orden = list(MES_KEY.values())
+        keyf = lambda m: (orden.index(m[:3].lower()) if m[:3].lower() in orden else 99, m)
+        print(f"# Fuente: {os.path.basename(zip_path)}")
+        for mes in sorted(cnt, key=keyf):
+            print(f"{mes}\t{cnt[mes]}")
+        return
 
     sel = [r for r in rows if mes_match(r.get("Mes"), a.mes)]
     if not sel:
