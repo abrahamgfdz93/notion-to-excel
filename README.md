@@ -32,12 +32,21 @@ cd notion-to-excel
 ./install.sh
 ```
 
-El instalador copia la skill a `~/.claude/skills/notion-to-excel/` e instala dependencias.
+El instalador te **preguntará cuál es tu carpeta principal de Claude** (la que contiene tu carpeta `projects`, ya sea en Desktop, Documents o donde la tengas) e instalará todo ahí:
+
+```
+<tu-carpeta>/projects/notion-to-excel/
+   ├── notion_to_excel.py      ← el script
+   ├── notion/                 ← deja aquí tu export .zip de Notion
+   └── output/                 ← aquí aparecen los Excel
+```
+
+La skill se registra dentro de **tu propia carpeta** (`<tu-carpeta>/.claude/skills/`), no en `~/.claude`. Por eso `/notion-to-excel` funciona cuando abres Claude Code en tu carpeta principal.
 
 ## 💻 Uso
 
-1. Exporta tu base de datos de Notion (**Export → Markdown & CSV**) y deja el `.zip` en la carpeta `notion/`.
-2. En Claude Code:
+1. Exporta tu base de datos de Notion (**Export → Markdown & CSV**) y deja el `.zip` en la carpeta `notion/` de la instalación.
+2. Abre Claude Code en tu carpeta principal y escribe:
 
 ```
 /notion-to-excel
